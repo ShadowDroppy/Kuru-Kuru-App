@@ -9,7 +9,7 @@ import webbrowser
 
 root = Tk()  # widget that functions as the window. Kinda cool I guess
 
-root.title('pics/Herta Kuru!')  # title of application
+root.title('Herta Kuru-Kuru!')  # title of application
 root.iconbitmap('pics/hertaiCO.ico')  # icon of app
 root.geometry("800x800")  # dimension tweak of the app window!
 
