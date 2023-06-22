@@ -6,12 +6,31 @@ import threading
 from tkinter import messagebox
 import random
 import webbrowser
+try:                                                  # For preventing crashes on MAC OS
+    from ctypes import windll, byref, sizeof, c_int   # Will try to run this on Windows. If not windows then...
+except:                                               # it will effectively ignore the stuff before to work on MAC OS
+    pass
 
 root = Tk()  # widget that functions as the window. Kinda cool I guess
 
 root.title('Herta Kuru-Kuru!')  # title of application
 root.iconbitmap('pics/hertaiCO.ico')  # icon of app
 root.geometry("800x800")  # dimension tweak of the app window!
+
+# change color of title bar
+try:
+    HWND = windll.user32.GetParent(root.winfo_id())
+    title_bar_color = 0x644575  #This ends up being an int variable!
+    title_text_color = 0xF7F3F9 #Same here!
+    windll.dwmapi.DwmSetWindowAttribute(HWND,35,                        #attribute no.35 is targeting the title bar background color
+                                        byref(c_int(title_bar_color)),
+                                        sizeof(c_int)) 
+
+    windll.dwmapi.DwmSetWindowAttribute(HWND,36,                        #attribute no.36 is targeting the title bar text color
+                                        byref(c_int(title_text_color)),
+                                        sizeof(c_int)) 
+except:
+    pass
 
 # background image
 c=Canvas(root, bg='#F9F3F7',height=1, width=1)
@@ -23,6 +42,7 @@ c.pack()
 
 root.config(background='#765873')
 
+#root canvas interface
 welcome_message = Label(root, text = "Welcome to Kuru Kuru!", bg='SystemButtonFace', fg='black', font="Verdana 32 bold italic").place(x=90, y=0)
 flavor_text = Label(root, text= "Application for all of your Kuru Kuru needs! *genius noises intensifies*", bg='SystemButtonFace', fg='black', font= "Comic 14 bold italic").place(x=60, y=63)
 
