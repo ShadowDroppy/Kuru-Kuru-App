@@ -9,14 +9,14 @@ import webbrowser
 
 root = Tk()  # widget that functions as the window. Kinda cool I guess
 
-root.title('Herta Kuru!')  # title of application
-root.iconbitmap('hertaiCO.ico')  # icon of app
+root.title('pics/Herta Kuru!')  # title of application
+root.iconbitmap('pics/hertaiCO.ico')  # icon of app
 root.geometry("800x800")  # dimension tweak of the app window!
 
 # background image
 c=Canvas(root, bg='#F9F3F7',height=1, width=1)
-chibi = Image.open("herta chibi.png")
-chibi = ImageTk.PhotoImage(file= "herta chibi.png")
+chibi = Image.open("pics/herta chibi.png")
+chibi = ImageTk.PhotoImage(file= "pics/herta chibi.png")
 background_label = Label(root, image=chibi)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 c.pack()
@@ -41,7 +41,7 @@ lbl.place(x=0, y=0)
 gif_frames = []
 
 def preload_gif_frames():
-    img = Image.open("kurukuru-kururing.gif")
+    img = Image.open("pics/kurukuru-kururing.gif")
     for frame in ImageSequence.Iterator(img):
         tk_image = ImageTk.PhotoImage(frame.convert("RGBA"))
         gif_frames.append(tk_image)
@@ -69,7 +69,7 @@ def play_sound():
 
     #List of Sounds
 
-    sound_list =["Kuru kuru~ sound.mp3", "Herta's Kururin (Sound Effect).mp3", "Herta Kururin voice line _ Honkai Star Rail.mp3"]
+    sound_list =["audio/Kuru kuru~ sound.mp3", "audio/Herta's Kururin (Sound Effect).mp3", "audio/Herta Kururin voice line _ Honkai Star Rail.mp3"]
 
     #Choose a sound randomly
 
@@ -162,8 +162,8 @@ def credits():
     cred_lbl2.place(x=0, y=50)
 
     #ShadowDrop Credits
-    shadowdrop_img = Image.open('deoxsus.png')
-    shadowdrop_img = ImageTk.PhotoImage(file= "deoxsus.png")
+    shadowdrop_img = Image.open('pics/deoxsus.png')
+    shadowdrop_img = ImageTk.PhotoImage(file= "pics/deoxsus.png")
 
     shadowdrop_btn = Button(w2, text="ShadowDroppy\n\nMain Developer", image=shadowdrop_img, compound=LEFT, command=shadowdrop_link, bg="white", borderwidth=0)
     shadowdrop_btn.place(x=0, y=80)
@@ -172,7 +172,7 @@ def credits():
     shadowdrop_btn.bind("<Leave>", on_leave)
 
     #Seseren_kr credits
-    seseren_kr_img = Image.open('seseren_kr.jpg')
+    seseren_kr_img = Image.open('pics/seseren_kr.jpg')
 
     desired_width = 128
     desired_height = 128
@@ -187,7 +187,7 @@ def credits():
     seseren_kr_btn.place(x=250, y=80)
 
     #duiqt credits
-    duiqt_img = Image.open('duiqt.png')
+    duiqt_img = Image.open('pics/duiqt.png')
 
     desired_width = 128
     desired_height = 128
