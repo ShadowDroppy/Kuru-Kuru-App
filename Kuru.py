@@ -33,7 +33,7 @@ except:
     pass
 
 # background image
-c=Canvas(root, bg='#F9F3F7',height=1, width=1)
+c=Canvas(root,height=1, width=1)
 chibi = Image.open("pics/herta chibi.png")
 chibi = ImageTk.PhotoImage(file= "pics/herta chibi.png")
 background_label = Label(root, image=chibi)
@@ -43,28 +43,42 @@ c.pack()
 root.config(background='#765873')
 
 #root canvas interface
-welcome_message = Label(root, text = "Welcome to Kuru Kuru!", bg='SystemButtonFace', fg='black', font="Verdana 32 bold italic").place(x=90, y=0)
-flavor_text = Label(root, text= "Application for all of your Kuru Kuru needs! *genius noises intensifies*", bg='SystemButtonFace', fg='black', font= "Comic 14 bold italic").place(x=60, y=63)
+global welcome_message, flavor_text
+welcome_message = Label(root, text = "Welcome to Kuru Kuru!", bg='SystemButtonFace', fg='black', font="Verdana 32 bold italic")
+welcome_message.place(x=90, y=0)
+flavor_text = Label(root, text= "Application for all of your Kuru Kuru needs! *genius noises intensifies*", bg='SystemButtonFace', fg='black', font= "Comic 14 bold italic")
+flavor_text.place(x=60, y=63)
 
 x_pos = 0
 y_pos = 0
 
+
+#Transparency hack?
+#root.wm_attributes('-transparentcolor', 'red')  #Transparency that even goes through the window?
+
 # leave global label out so it doesn't recuriveness what-evamabob for every frame. yuck...
 gif_labels = [] # Store GIF labels
-
-lbl = Label(root, bg='#F9F3F7')
-lbl.place(x=0, y=0)
-
 
 # preload Gif frames
 
 gif_frames = []
 
 def preload_gif_frames():
+    global tk_image
     img = Image.open("pics/kurukuru-kururing.gif")
     for frame in ImageSequence.Iterator(img):
-        tk_image = ImageTk.PhotoImage(frame.convert("RGBA"))
+        frame = frame.convert("RGBA")               
+        tk_image = ImageTk.PhotoImage(frame)
         gif_frames.append(tk_image)
+
+def add_gif():
+    global gif_lbl
+    bg_color = "SystemButtonFace" if light_dark_mode else "#26242f"
+    gif_lbl = Label(root, bg=bg_color)
+    gif_lbl.place(x=0,y=0)
+    gif_labels.append(gif_lbl)
+    thread = threading.Thread(target=play_gif, args=(gif_lbl,))
+    thread.start()
 
 # play gif function
 
@@ -82,7 +96,6 @@ def play_gif(lbl):
             root.update()
             time.sleep(0.05)
 
-
 # play Kuru Kuru
 def play_sound():
     pygame.mixer.init()
@@ -97,19 +110,30 @@ def play_sound():
     pygame.mixer.music.load(random_sound)
     pygame.mixer.music.play(loops=0)
 
-def set_vol(val):
-    global volume
-    volume=int(val)/100
-    pygame.mixer.music.set_volume(volume)
-
-def volume_control():
+#Options window
+def options_menu():
+    global w3
     pygame.mixer.init()
     w3 = Toplevel()
     w3.title("Options")
     w3.geometry("500x500")
     w3.configure(bg="SystemButtonFace")
 
+    volume_control()
+    light_dark_function()
+
+    root.lift()
+
+#Volume control & settings
+def set_vol(val):
+    global volume
+    volume=int(val)/100
+    pygame.mixer.music.set_volume(volume)
+
+def volume_control():
+
     #volume control
+    global vol_lbl
     vol_lbl = Label(w3, text="Volume", font="Verdana 10 bold italic")
     vol_lbl.place(x=0,y=0)
 
@@ -119,14 +143,6 @@ def volume_control():
     pygame.mixer.music.set_volume(0.7)
     scale.place(x=0,y=20)
 
-    root.lift()
-
-def add_gif():
-    lbl = Label(root, bg='SystemButtonFace')
-    lbl.place(x=0,y=0)
-    gif_labels.append(lbl)
-    thread = threading.Thread(target=play_gif, args=(lbl,))
-    thread.start()
 
 counter = 0
 
@@ -141,6 +157,8 @@ def counter_label():
    counter_text.set("You Kuru'd {} times!".format(counter))
 
 
+
+
 #helper function
 def helper_function():
     t1 = threading.Thread(target=play_sound)
@@ -148,6 +166,8 @@ def helper_function():
     t1.start()
     t2.start()
     counter_label()
+
+
     
 def exit():
     root.destroy()
@@ -166,12 +186,14 @@ click_button2.place(x=410, y=700)
 
 #Credits window functionality --------------------------------------------------------------------------------------------------------------------------------------------------
 #2nd Window (Credits)
+
 def credits():
-    global shadowdrop_img, seseren_kr_img
+    global shadowdrop_img, seseren_kr_img, w2, shadowdrop_btn, seseren_kr_btn, duiqt_btn, duiqt_img
     w2 = Toplevel()
     w2.title("Credits")
     w2.geometry("500x500")
     w2.configure(bg="white")
+    
 
     #credits label
     global cred_lbl, cred_lbl2
@@ -264,6 +286,12 @@ def on_leave2(f):
 def on_leave3(g):
     g.widget['background'] = 'white'
 
+def on_enter4(h):
+    h.widget['background'] = '#darkgrey'
+
+def on_leave4(h):
+    h.widget['background'] = '#26242f'
+
 click_button1.bind("<Enter>", on_enter2)
 click_button1.bind("<Leave>", on_leave2)
 
@@ -278,7 +306,7 @@ credits_button.place(x=650, y=625)
 credits_button.bind("<Enter>", on_enter)
 credits_button.bind("<Leave>", on_leave)
 
-options_button = Button(root, text="Options", command=volume_control)
+options_button = Button(root, text="Options", command=options_menu)
 options_button.place(x=650, y=665)
 
 options_button.bind("<Enter>", on_enter)
@@ -308,9 +336,91 @@ def Milestone_Comments():
             milestone_text.config(text="100 Kuru's! Keep on spinning baby!")
             
 #version no. update ------------------------------------------------------------------------------------------------------------------------------------------------------------
+global version_lbl
 version_lbl = Label(root, text="1.2.0", font= "Comic 10 bold italic", fg="black")
 version_lbl.place(x=750, y=770)
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+light_dark_mode = True
+def light_dark_toggle():
+    global light_img, light_dark_btn, light_dark_mode, dark_img, gif_lbl
+
+    if light_dark_mode: #Changed to DARK MODE
+        light_dark_btn.config(image=dark_photo, bg="#26242f", activebackground="#26242f")
+        light_dark_btn.image = dark_photo
+
+        #Root Changes
+        background_label.config(bg="#26242f")
+        welcome_message.config(bg='#26242f', fg='#A249A2')
+        flavor_text.config(bg='#26242f', fg='#C87BC8')
+        version_lbl.config(bg='#26242f', fg='#A249A2')
+
+        if 'w2' in globals() and w2.winfo_exists():
+            w2.config(bg="#26242f")
+            cred_lbl.config(bg="#26242f", fg="#A249A2")
+            cred_lbl2.config(bg="#26242f", fg="#C87BC8")
+            shadowdrop_btn.config(bg="#26242f", fg="#C87BC8")
+            seseren_kr_btn.config(bg="#26242f", fg="#C87BC8")
+            duiqt_btn.config(bg="#26242f", fg="#C87BC8")
+
+            shadowdrop_btn.bind("<Leave>", on_leave4)
+            seseren_kr_btn.bind("<Leave>", on_leave4)
+            duiqt_btn.bind("<Leave>", on_leave4)
+            
+
+        #Options Menu Changes
+        w3.config(bg="#26242f")
+        vol_lbl.config(fg="white",bg="#26242f")
+        scale.config(bg="#26242f", fg="white")
+        light_dark_mode = False
+    
+    else:
+        light_dark_btn.config(image=light_photo, bg="SystemButtonFace", activebackground="SystemButtonFace")
+        light_dark_btn.image = light_photo
+
+        #Root Changes
+        background_label.config(bg="SystemButtonFace")
+        welcome_message.config(bg='SystemButtonFace', fg='black')
+        flavor_text.config(bg='SystemButtonFace', fg='black')
+        version_lbl.config(bg='SystemButtonFace', fg='black')
+
+        if 'w2' in globals() and w2.winfo_exists():
+            w2.config(bg="white")
+            cred_lbl.config(bg="white", fg="black")
+            cred_lbl2.config(bg="white", fg="black")
+            shadowdrop_btn.config(bg="white", fg="black")
+            seseren_kr_btn.config(bg="white", fg="black")
+            duiqt_btn.config(bg="white", fg="black")
+
+            shadowdrop_btn.bind("<Leave>", on_leave3)
+            seseren_kr_btn.bind("<Leave>", on_leave3)
+            duiqt_btn.bind("<Leave>", on_leave3)
+
+        #Option Menu Changes
+        w3.config(bg="SystemButtonFace")
+        vol_lbl.config(fg="black",bg="SystemButtonFace")
+        scale.config(bg="SystemButtonFace", fg="Black")
+        light_dark_mode = True
+    
+
+def light_dark_function():
+    global desired_height, desired_width, resized_light, resized_dark, light_dark_btn, light_photo, dark_photo
+
+    on = Image.open('pics/light mode button.png')
+    off = Image.open('pics/dark mode button.png')
+    desired_width = 200
+    desired_height = 200
+
+    resized_light = on.resize((desired_width, desired_height), Image.ANTIALIAS)
+    resized_dark = off.resize((desired_width, desired_height), Image.ANTIALIAS)
+
+    light_photo = ImageTk.PhotoImage(resized_light)
+    dark_photo = ImageTk.PhotoImage(resized_dark)
+
+    light_dark_btn = Button(w3, image=light_photo, command=light_dark_toggle, borderwidth=0)
+    light_dark_btn.image = light_photo
+    light_dark_btn.place(x=0, y=400)
 
 preload_gif_frames()
 
