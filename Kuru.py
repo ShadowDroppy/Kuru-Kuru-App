@@ -75,7 +75,7 @@ def add_gif():
     global gif_lbl
     bg_color = "SystemButtonFace" if light_dark_mode else "#26242f"
     gif_lbl = Label(root, bg=bg_color)
-    gif_lbl.place(x=0,y=0)
+    gif_lbl.place(x=800,y=88)
     gif_labels.append(gif_lbl)
     thread = threading.Thread(target=play_gif, args=(gif_lbl,))
     thread.start()
@@ -96,19 +96,22 @@ def play_gif(lbl):
             root.update()
             time.sleep(0.05)
 
+def gif_2():
+    global img2, img2_gif, img2_gif_lbl
+    img2 = Image.open("pics/kurukuru-kururing.gif")
+    desired_width = 80
+    desired_height = 80
+    resized_img2 = img2.resize((desired_width, desired_height), Image.ANTIALIAS)
+    img2_gif = ImageTk.PhotoImage(resized_img2)
+
+    img2_gif_lbl = Label(root, image=img2_gif)
+    img2_gif_lbl.image = img2_gif
+
+    img2_gif_lbl.place(x=700, y=-20)
+
+   
+
 # play Kuru Kuru
-def play_sound():
-    pygame.mixer.init()
-
-    #List of Sounds
-
-    sound_list =["audio/Kuru kuru~ sound.mp3", "audio/Herta's Kururin (Sound Effect).mp3", "audio/Herta Kururin voice line _ Honkai Star Rail.mp3"]
-
-    #Choose a sound randomly
-
-    random_sound = random.choice(sound_list)
-    pygame.mixer.music.load(random_sound)
-    pygame.mixer.music.play(loops=0)
 
 #Options window
 def options_menu():
@@ -118,11 +121,83 @@ def options_menu():
     w3.title("Options")
     w3.geometry("500x500")
     w3.configure(bg="SystemButtonFace")
+    lng_txt = Label(w3, text="Language Settings", bg="SystemButtonFace", fg="black", font="Verdana 10 bold italic")
+    lng_txt.place(x=0, y=90)
 
     volume_control()
     light_dark_function()
+    eng_lng_button()
+    jpn_lng_button()
 
     root.lift()
+
+# Set Languages
+global w3
+eng = True
+jpn = True
+
+
+def set_lng_eng():
+    global eng, jpn
+    pygame.mixer.init()
+    random_sound2 = random.choice(english_list)
+    pygame.mixer.music.load(random_sound2)
+    pygame.mixer.music.play(loops=0)
+
+    eng = False
+    jpn = True
+
+
+def eng_lng_button():
+    eng_img = Image.open("pics/english.png")
+    eng_photo = ImageTk.PhotoImage(eng_img)
+    eng_btn = Button(w3, image=eng_photo,bg="SystemButtonFace",command=set_lng_eng, borderwidth=0)
+    eng_btn.image = eng_photo
+    eng_btn.place(x=0, y=110)
+    eng_btn.bind("<Enter>", on_enter)
+    eng_btn.bind("<Leave>", on_leave)
+
+def set_lng_jpn():
+    global jpn, eng
+    pygame.mixer.init()
+    random_sound1 = random.choice(japanese_list)
+    pygame.mixer.music.load(random_sound1)
+    pygame.mixer.music.play(loops=0)
+
+    jpn = False
+    eng = True
+
+
+def jpn_lng_button():
+    jpn_img = Image.open("pics/japanese.png")
+    jpn_photo = ImageTk.PhotoImage(jpn_img)
+    jpn_btn = Button(w3, image=jpn_photo,bg="SystemButtonFace", command=set_lng_jpn, borderwidth=0)
+    jpn_btn.Image = jpn_photo
+    jpn_btn.place(x=120, y=110)
+    jpn_btn.bind("<Enter>", on_enter)
+    jpn_btn.bind("<Leave>", on_leave)
+
+
+def play_sound():
+    global japanese_list, english_list, eng, jpn
+    pygame.mixer.init()
+
+    #List of Sounds
+
+    japanese_list =["audio/Kuru kuru~ sound.mp3", "audio/Herta's Kururin (Sound Effect).mp3", "audio/Herta Kururin voice line _ Honkai Star Rail.mp3"]
+    english_list = ["audio/eng1.mp3", "audio/eng2.mp3"]
+
+    #Choose a sound randomly (Japanese Default)
+
+    random_sound = random.choice(japanese_list)
+    pygame.mixer.music.load(random_sound)
+    pygame.mixer.music.play(loops=0)
+
+    if eng == False:
+        set_lng_eng()
+
+    if jpn == False:
+        set_lng_jpn()
 
 #Volume control & settings
 def set_vol(val):
@@ -319,19 +394,18 @@ github_button.bind("<Enter>", on_enter)
 github_button.bind("<Leave>", on_leave)
 
 # Click Milestone comments! -----------------------------------------------------------------------------------------------------------------------------------------------------
-milestone_text= None
 
 def Milestone_Comments():
     global milestone_text
-    if counter == 10 and milestone_text is None:
+    if counter == 10:
         milestone_text = Label(root, text="10 Kurus! The spinning has only just begun!", fg='black', bg='#F9F3F7', font="Comic 12 bold italic")
         milestone_text.place(x=255, y= 645)
        
-    if counter == 50 and milestone_text is not None:
+    if counter == 50:
         if milestone_text:
             milestone_text.config(text="50 kuru's is nothing for true bonafide geniuses!")
 
-    if counter == 100 and milestone_text is not None:
+    if counter == 100:
         if milestone_text:
             milestone_text.config(text="100 Kuru's! Keep on spinning baby!")
             
@@ -355,6 +429,10 @@ def light_dark_toggle():
         welcome_message.config(bg='#26242f', fg='#A249A2')
         flavor_text.config(bg='#26242f', fg='#C87BC8')
         version_lbl.config(bg='#26242f', fg='#A249A2')
+        img2_gif_lbl.config(bg="#26242f")
+
+        if 'milestone_text' in globals():
+            milestone_text.config(bg='#26242f', fg='#C87BC8')
 
         if 'w2' in globals() and w2.winfo_exists():
             w2.config(bg="#26242f")
@@ -384,6 +462,10 @@ def light_dark_toggle():
         welcome_message.config(bg='SystemButtonFace', fg='black')
         flavor_text.config(bg='SystemButtonFace', fg='black')
         version_lbl.config(bg='SystemButtonFace', fg='black')
+        img2_gif_lbl.config(bg="SystemButtonFace")
+
+        if 'milestone_text' in globals():
+            milestone_text.config(bg="SystemButtonFace", fg="black")
 
         if 'w2' in globals() and w2.winfo_exists():
             w2.config(bg="white")
@@ -422,6 +504,9 @@ def light_dark_function():
     light_dark_btn.image = light_photo
     light_dark_btn.place(x=0, y=400)
 
+
+
 preload_gif_frames()
+gif_2()
 
 root.mainloop()
