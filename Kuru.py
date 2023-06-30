@@ -14,7 +14,7 @@ except:                                               # it will effectively igno
 root = Tk()  # widget that functions as the window. Kinda cool I guess
 
 root.title('Herta Kuru-Kuru!')  # title of application
-root.iconbitmap('pics/hertaiCO.ico')  # icon of app
+root.iconbitmap('pics/face.ico')  # icon of app
 root.geometry("800x800")  # dimension tweak of the app window!
 
 # change color of title bar
