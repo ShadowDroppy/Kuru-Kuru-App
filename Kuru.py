@@ -115,7 +115,7 @@ def gif_2():
 
 #Options window
 def options_menu():
-    global w3
+    global w3, lng_txt
     pygame.mixer.init()
     w3 = Toplevel()
     w3.title("Options")
@@ -129,6 +129,7 @@ def options_menu():
     eng_lng_button()
     jpn_lng_button()
     chn_lng_button()
+    kor_lng_button()
 
     root.lift()
 
@@ -137,10 +138,11 @@ global w3
 eng = True
 jpn = True
 chn = True
+kor = True
 
 
 def set_lng_eng():
-    global eng, jpn, chn
+    global eng, jpn, chn, kor
     pygame.mixer.init()
     random_sound2 = random.choice(english_list)
     pygame.mixer.music.load(random_sound2)
@@ -149,9 +151,11 @@ def set_lng_eng():
     eng = False
     jpn = True
     chn = True
+    kor = True
 
 
 def eng_lng_button():
+    global eng_btn
     eng_img = Image.open("pics/english.png")
     eng_photo = ImageTk.PhotoImage(eng_img)
     eng_btn = Button(w3, image=eng_photo,bg="SystemButtonFace",command=set_lng_eng, borderwidth=0)
@@ -161,7 +165,7 @@ def eng_lng_button():
     eng_btn.bind("<Leave>", on_leave)
 
 def set_lng_jpn():
-    global jpn, eng, chn
+    global jpn, eng, chn, kor
     pygame.mixer.init()
     random_sound1 = random.choice(japanese_list)
     pygame.mixer.music.load(random_sound1)
@@ -170,9 +174,11 @@ def set_lng_jpn():
     jpn = False
     eng = True
     chn = True
+    kor = True
 
 
 def jpn_lng_button():
+    global jpn_btn
     jpn_img = Image.open("pics/japanese.png")
     jpn_photo = ImageTk.PhotoImage(jpn_img)
     jpn_btn = Button(w3, image=jpn_photo,bg="SystemButtonFace", command=set_lng_jpn, borderwidth=0)
@@ -182,7 +188,7 @@ def jpn_lng_button():
     jpn_btn.bind("<Leave>", on_leave)
 
 def set_lng_chn():
-    global jpn, eng, chn
+    global jpn, eng, chn, kor
     pygame.mixer.init()
     random_sound3 = random.choice(chinese_list)
     pygame.mixer.music.load(random_sound3)
@@ -191,8 +197,10 @@ def set_lng_chn():
     chn = False
     eng = True
     jpn = True
+    kor = True
 
 def chn_lng_button():
+    global chn_btn
     chn_img = Image.open("pics/chinese.png")
     chn_photo = ImageTk.PhotoImage(chn_img)
     chn_btn = Button(w3, image=chn_photo,bg="SystemButtonFace",command=set_lng_chn, borderwidth=0)
@@ -201,9 +209,30 @@ def chn_lng_button():
     chn_btn.bind("<Enter>", on_enter)
     chn_btn.bind("<Leave>", on_leave)
 
+def set_lng_kor():
+    global jpn, eng, chn, kor
+    pygame.mixer.init()
+    random_sound4 = random.choice(korean_list)
+    pygame.mixer.music.load(random_sound4)
+    pygame.mixer.music.play(loops=0)
+
+    kor = False
+    chn = True
+    eng = True
+    jpn = True
+
+def kor_lng_button():
+    global kor_btn
+    kor_img = Image.open("pics/korean.png")
+    kor_photo = ImageTk.PhotoImage(kor_img)
+    kor_btn = Button(w3, image=kor_photo,bg="SystemButtonFace",command=set_lng_kor, borderwidth=0)
+    kor_btn.image = kor_photo
+    kor_btn.place(x=360, y=110)
+    kor_btn.bind("<Enter>", on_enter)
+    kor_btn.bind("<Leave>", on_leave)
 
 def play_sound():
-    global japanese_list, english_list, chinese_list, eng, jpn
+    global japanese_list, english_list, chinese_list, korean_list, eng, jpn
     pygame.mixer.init()
 
     #List of Sounds
@@ -211,6 +240,7 @@ def play_sound():
     japanese_list =["audio/Kuru kuru~ sound.mp3", "audio/Herta's Kururin (Sound Effect).mp3", "audio/Herta Kururin voice line _ Honkai Star Rail.mp3"]
     english_list = ["audio/eng1.mp3", "audio/eng2.mp3"]
     chinese_list = ["audio/chn1.mp3", "audio/chn2.mp3"]
+    korean_list = ["audio/kor1.mp3", "audio/kor2.mp3"]
 
     #Choose a sound randomly (Japanese Default)
 
@@ -226,6 +256,9 @@ def play_sound():
 
     if chn == False:
         set_lng_chn()
+
+    if kor == False:
+        set_lng_kor()
 
 #Volume control & settings
 def set_vol(val):
@@ -439,7 +472,7 @@ def Milestone_Comments():
             
 #version no. update ------------------------------------------------------------------------------------------------------------------------------------------------------------
 global version_lbl
-version_lbl = Label(root, text="1.2.0", font= "Comic 10 bold italic", fg="black")
+version_lbl = Label(root, text="1.3.0", font= "Comic 10 bold italic", fg="black")
 version_lbl.place(x=750, y=770)
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -479,7 +512,20 @@ def light_dark_toggle():
         w3.config(bg="#26242f")
         vol_lbl.config(fg="white",bg="#26242f")
         scale.config(bg="#26242f", fg="white")
+        lng_txt.config(bg="#26242f", fg="white")
+        eng_btn.config(bg="#26242f")
+        jpn_btn.config(bg="#26242f")
+        chn_btn.config(bg="#26242f")
+        kor_btn.config(bg="#26242f")
+
+        eng_btn.bind("<Leave>", on_leave4)
+        jpn_btn.bind("<Leave>", on_leave4)
+        chn_btn.bind("<Leave>", on_leave4)
+        kor_btn.bind("<Leave>", on_leave4)
+
+
         light_dark_mode = False
+        
     
     else:
         light_dark_btn.config(image=light_photo, bg="SystemButtonFace", activebackground="SystemButtonFace")
@@ -511,6 +557,17 @@ def light_dark_toggle():
         w3.config(bg="SystemButtonFace")
         vol_lbl.config(fg="black",bg="SystemButtonFace")
         scale.config(bg="SystemButtonFace", fg="Black")
+        lng_txt.config(bg="SystemButtonFace", fg="black")
+        eng_btn.config(bg="SystemButtonFace")
+        jpn_btn.config(bg="SystemButtonFace")
+        chn_btn.config(bg="SystemButtonFace")
+        kor_btn.config(bg="SystemButtonFace")
+
+        eng_btn.bind("<Leave>", on_leave)
+        jpn_btn.bind("<Leave>", on_leave)
+        chn_btn.bind("<Leave>", on_leave)
+        kor_btn.bind("<Leave>", on_leave)
+
         light_dark_mode = True
     
 
