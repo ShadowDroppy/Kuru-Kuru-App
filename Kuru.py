@@ -128,6 +128,7 @@ def options_menu():
     light_dark_function()
     eng_lng_button()
     jpn_lng_button()
+    chn_lng_button()
 
     root.lift()
 
@@ -135,10 +136,11 @@ def options_menu():
 global w3
 eng = True
 jpn = True
+chn = True
 
 
 def set_lng_eng():
-    global eng, jpn
+    global eng, jpn, chn
     pygame.mixer.init()
     random_sound2 = random.choice(english_list)
     pygame.mixer.music.load(random_sound2)
@@ -146,6 +148,7 @@ def set_lng_eng():
 
     eng = False
     jpn = True
+    chn = True
 
 
 def eng_lng_button():
@@ -158,7 +161,7 @@ def eng_lng_button():
     eng_btn.bind("<Leave>", on_leave)
 
 def set_lng_jpn():
-    global jpn, eng
+    global jpn, eng, chn
     pygame.mixer.init()
     random_sound1 = random.choice(japanese_list)
     pygame.mixer.music.load(random_sound1)
@@ -166,6 +169,7 @@ def set_lng_jpn():
 
     jpn = False
     eng = True
+    chn = True
 
 
 def jpn_lng_button():
@@ -177,15 +181,36 @@ def jpn_lng_button():
     jpn_btn.bind("<Enter>", on_enter)
     jpn_btn.bind("<Leave>", on_leave)
 
+def set_lng_chn():
+    global jpn, eng, chn
+    pygame.mixer.init()
+    random_sound3 = random.choice(chinese_list)
+    pygame.mixer.music.load(random_sound3)
+    pygame.mixer.music.play(loops=0)
+
+    chn = False
+    eng = True
+    jpn = True
+
+def chn_lng_button():
+    chn_img = Image.open("pics/chinese.png")
+    chn_photo = ImageTk.PhotoImage(chn_img)
+    chn_btn = Button(w3, image=chn_photo,bg="SystemButtonFace",command=set_lng_chn, borderwidth=0)
+    chn_btn.image = chn_photo
+    chn_btn.place(x=240, y=110)
+    chn_btn.bind("<Enter>", on_enter)
+    chn_btn.bind("<Leave>", on_leave)
+
 
 def play_sound():
-    global japanese_list, english_list, eng, jpn
+    global japanese_list, english_list, chinese_list, eng, jpn
     pygame.mixer.init()
 
     #List of Sounds
 
     japanese_list =["audio/Kuru kuru~ sound.mp3", "audio/Herta's Kururin (Sound Effect).mp3", "audio/Herta Kururin voice line _ Honkai Star Rail.mp3"]
     english_list = ["audio/eng1.mp3", "audio/eng2.mp3"]
+    chinese_list = ["audio/chn1.mp3", "audio/chn2.mp3"]
 
     #Choose a sound randomly (Japanese Default)
 
@@ -198,6 +223,9 @@ def play_sound():
 
     if jpn == False:
         set_lng_jpn()
+
+    if chn == False:
+        set_lng_chn()
 
 #Volume control & settings
 def set_vol(val):
